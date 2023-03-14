@@ -174,12 +174,12 @@ class ViewController: UIViewController {
         if FileManager.default.fileExists(atPath: zipFileURL.path) {
             print("retriveUser - ✅ file exists")
             do {
-                //Decriptare il file zip
+                //decrypt zip file
                 let deterministicSeedString = try Mnemonic.deterministicSeedString(from: originalString, passphrase: "test", language: .english)
                 let symmetricKey = encodingModel.keyFromPassword(deterministicSeedString)
                 try self.decryptZipFileWithAES(atPath: zipFileURL.path, key: symmetricKey)
                 
-                //Estrarre i file zip
+                //extract zip file
                 let unzipFolderURL = commonAppFolderForTheFileURL.appendingPathComponent(folderName, isDirectory: true)
                 try SSZipArchive.unzipFile(atPath: zipFileURL.path, toDestination: unzipFolderURL.path)
                 let user = self.unzipAndReadUserJson(fileName: fileName, folderName: folderName)
