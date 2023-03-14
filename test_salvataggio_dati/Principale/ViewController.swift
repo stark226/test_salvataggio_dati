@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  test_salvataggio_dati
-//
-//  Created by stefano cardia on 07/03/23.
-//
-
 import UIKit
 import MnemonicSwift
 import CryptoKit
@@ -42,30 +35,30 @@ class ViewController: UIViewController {
         //UNZIP
         //                let userUnzipped = unzipAndReadUserJson(fileName: fileName, folderName: folderName)!
         
-        //        generateSeedAndEncode64(mnemonicString: mnemonicString, user: dummyUser) { [weak self] result in
-        //            guard let self = self else {return}
-        //
-        //            switch result {
-        //            case .success(let (base64EncodedString, symmetricKey)):
-        //
-        //                self.saveZipUserJson(
-        //                    user: base64EncodedString,
-        //                    fileName: fileName,
-        //                    folderName: folderName,
-        //                    symmetricKey: symmetricKey) { [weak self] zipFileURL in
-        //                    guard let self = self else {return}
-        //                    do {
-        //                        //Criptare file zip con AES
-        //                        try self.encryptZipFileWithAES(atPath: zipFileURL.path, key: symmetricKey)
-        //                    } catch {
-        //                        print("❌ caught error: \(error.localizedDescription)")
-        //                    }
-        //                }
-        //
-        //            case .failure(let error):
-        //                print("Error: \(error.localizedDescription)")
-        //            }
-        //        }
+                generateSeedAndEncode64(mnemonicString: mnemonicString, user: dummyUser) { [weak self] result in
+                    guard let self = self else {return}
+        
+                    switch result {
+                    case .success(let (base64EncodedString, symmetricKey)):
+        
+                        self.saveZipUserJson(
+                            user: base64EncodedString,
+                            fileName: fileName,
+                            folderName: folderName,
+                            symmetricKey: symmetricKey) { [weak self] zipFileURL in
+                            guard let self = self else {return}
+                            do {
+                                //Criptare file zip con AES
+                                try self.encryptZipFileWithAES(atPath: zipFileURL.path, key: symmetricKey)
+                            } catch {
+                                print("❌ caught error: \(error.localizedDescription)")
+                            }
+                        }
+        
+                    case .failure(let error):
+                        print("Error: \(error.localizedDescription)")
+                    }
+                }
         
         
         self.retriveUser(originalString: self.mnemonicString, fileName: fileName, folderName: folderName)
@@ -223,44 +216,102 @@ class ViewController: UIViewController {
     
     
     
+    //    func unzipAndReadUserJson(fileName: String, folderName: String) -> User? {
+    //
+    //        let commonAppFolderForTheFileURL = FileManager.documentDirectoryURL
+    //
+    //        do {
+    //            // Creare la cartella temporanea per l'estrazione del file zip
+    //            let tempFolderURL = commonAppFolderForTheFileURL
+    //                .appendingPathComponent("temp", isDirectory: true)
+    //                .deletingLastPathComponent()
+    //            try FileManager.default.createDirectory(at: tempFolderURL, withIntermediateDirectories: true, attributes: nil)
+    //
+    //            // Estrarre il file zip nella cartella temporanea
+    //            let zipFileURL = commonAppFolderForTheFileURL.appendingPathComponent("\(folderName).zip")
+    //            let unzipResult = SSZipArchive.unzipFile(atPath: zipFileURL.path, toDestination: tempFolderURL.path)
+    //            guard unzipResult else {
+    //                print("unzipAndReadUserJson - ❌ Errore durante l'unzip del file zip")
+    //                return nil
+    //            }
+    //            print("unzipAndReadUserJson - ✅ file unzipped")
+    //
+    //            // Leggere il file JSON estratto
+    //            let folderURL = tempFolderURL.appendingPathComponent(folderName, isDirectory: true)
+    //            let fileURL = folderURL.appendingPathComponent(fileName)
+    //            //print("fileURL unzip:\n\(fileURL)")
+    //            let jsonData = try Data(contentsOf: fileURL)
+    //            print(String(data: jsonData, encoding: .utf8))
+    //            let decoder = JSONDecoder()
+    //            let user = try decoder.decode(User.self, from: jsonData)
+    //            print("unzipAndReadUserJson - ✅ \(user)")
+    //
+    //            return user
+    //
+    //        } catch {
+    //            print("unzipAndReadUserJson - ❌ \(error)")
+    //            return nil
+    //        }
+    //    }
+    //
     
+    //from stack
     func unzipAndReadUserJson(fileName: String, folderName: String) -> User? {
-        
-        let commonAppFolderForTheFileURL = FileManager.documentDirectoryURL
-        
-        do {
-            // Creare la cartella temporanea per l'estrazione del file zip
-            let tempFolderURL = commonAppFolderForTheFileURL
-                .appendingPathComponent("temp", isDirectory: true)
-                .deletingLastPathComponent()
-            try FileManager.default.createDirectory(at: tempFolderURL, withIntermediateDirectories: true, attributes: nil)
-            
-            // Estrarre il file zip nella cartella temporanea
-            let zipFileURL = commonAppFolderForTheFileURL.appendingPathComponent("\(folderName).zip")
-            let unzipResult = SSZipArchive.unzipFile(atPath: zipFileURL.path, toDestination: tempFolderURL.path)
-            guard unzipResult else {
-                print("unzipAndReadUserJson - ❌ Errore durante l'unzip del file zip")
-                return nil
-            }
-            print("unzipAndReadUserJson - ✅ file unzipped")
-            
-            // Leggere il file JSON estratto
-            let folderURL = tempFolderURL.appendingPathComponent(folderName, isDirectory: true)
-            let fileURL = folderURL.appendingPathComponent(fileName)
-            //print("fileURL unzip:\n\(fileURL)")
-            let jsonData = try Data(contentsOf: fileURL)
-            let decoder = JSONDecoder()
-            let user = try decoder.decode(User.self, from: jsonData)
-            print("unzipAndReadUserJson - ✅ \(user)")
-            
-            return user
-            
-        } catch {
-            print("unzipAndReadUserJson - ❌ \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
+          
+          let commonAppFolderForTheFileURL = FileManager.documentDirectoryURL
+          
+          do {
+              // Creare la cartella temporanea per l'estrazione del file zip
+              let tempFolderURL = commonAppFolderForTheFileURL
+                  .appendingPathComponent("temp", isDirectory: true)
+                  .deletingLastPathComponent()
+              try FileManager.default.createDirectory(at: tempFolderURL, withIntermediateDirectories: true, attributes: nil)
+              
+              // Estrarre il file zip nella cartella temporanea
+              let zipFileURL = commonAppFolderForTheFileURL.appendingPathComponent("\(folderName).zip")
+              let unzipResult = SSZipArchive.unzipFile(atPath: zipFileURL.path, toDestination: tempFolderURL.path)
+              guard unzipResult else {
+                  print("unzipAndReadUserJson - ❌ Errore durante l'unzip del file zip")
+                  return nil
+              }
+              print("unzipAndReadUserJson - ✅ file unzipped")
+              
+              // Leggere il file JSON estratto
+              let folderURL = tempFolderURL.appendingPathComponent(folderName, isDirectory: true)
+              let fileURL = folderURL.appendingPathComponent(fileName)
+              //print("fileURL unzip:\n\(fileURL)")
+
+              // <---------
+              let theData = try Data(contentsOf: fileURL)
+              print("\n----> theData: \(theData)")
+              // convert theData into a string
+              let b64String = String(data: theData, encoding: .utf8)!
+              print("\n----> b64String: \(b64String)")
+              // decode the base64 string
+              guard let b64Data = Data(base64Encoded: b64String) else {
+                  print("unzipAndReadUserJson - ❌ b64Data is nil")
+                  return nil
+              }
+              let theString = String(data: b64Data, encoding: .utf8)!
+              print("\n----> theString: \(theString)")
+              
+              // create a json data from the decoded base64 string
+              let thisData = Data(theString.utf8)
+              // decode the jsonData into a User
+              let user = try JSONDecoder().decode(User.self, from: thisData)
+              // <---------
+
+              print("unzipAndReadUserJson - ✅ \(user)")
+              
+              return user
+              
+          } catch {
+              print("unzipAndReadUserJson - ❌ \(error)")
+              print("unzipAndReadUserJson - ❌ \(error.localizedDescription)")
+              return nil
+          }
+      }
+      
     
 }
 
