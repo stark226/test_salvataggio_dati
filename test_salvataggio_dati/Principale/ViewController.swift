@@ -37,35 +37,31 @@ class ViewController: UIViewController {
         let fileName = "myJedi.json"
         let folderName = "myNewFolder"
         
-        //ZIP
-        //                        saveZipEncryptUserJson(user: dummyUser, fileName: fileName, folderName: folderName)
-        //UNZIP
-        //                let userUnzipped = unzipAndReadUserJson(fileName: fileName, folderName: folderName)!
+  
+                generateSeedAndEncode64(mnemonicString: mnemonicString, user: dummyUser) { [weak self] result in
+                    guard let self = self else {return}
         
-        //        generateSeedAndEncode64(mnemonicString: mnemonicString, user: dummyUser) { [weak self] result in
-        //            guard let self = self else {return}
-        //
-        //            switch result {
-        //            case .success(let (base64EncodedString, symmetricKey)):
-        //
-        //                self.saveZipUserJson(
-        //                    user: base64EncodedString,
-        //                    fileName: fileName,
-        //                    folderName: folderName,
-        //                    symmetricKey: symmetricKey) { [weak self] zipFileURL in
-        //                    guard let self = self else {return}
-        //                    do {
-        //                        //Criptare file zip con AES
-        //                        try self.encryptZipFileWithAES(atPath: zipFileURL.path, key: symmetricKey)
-        //                    } catch {
-        //                        print("❌ caught error: \(error.localizedDescription)")
-        //                    }
-        //                }
-        //
-        //            case .failure(let error):
-        //                print("Error: \(error.localizedDescription)")
-        //            }
-        //        }
+                    switch result {
+                    case .success(let (base64EncodedString, symmetricKey)):
+        
+                        self.saveZipUserJson(
+                            user: base64EncodedString,
+                            fileName: fileName,
+                            folderName: folderName,
+                            symmetricKey: symmetricKey) { [weak self] zipFileURL in
+                            guard let self = self else {return}
+                            do {
+                                //Criptare file zip con AES
+                                try self.encryptZipFileWithAES(atPath: zipFileURL.path, key: symmetricKey)
+                            } catch {
+                                print("❌ caught error: \(error.localizedDescription)")
+                            }
+                        }
+        
+                    case .failure(let error):
+                        print("Error: \(error.localizedDescription)")
+                    }
+                }
         
         
         self.retriveUser(originalString: self.mnemonicString, fileName: fileName, folderName: folderName)
